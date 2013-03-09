@@ -1,0 +1,20 @@
+<script src="../lib/jquery-1.9.1.min.js"></script>
+<script src="../src/password.js"></script>
+<script>
+$(function() {
+	$('#passwordy').password({
+		change:function(score, issues, pass) {
+			$('#feedback').html('Score: '+score+', Problems: '+issues);
+			if(pass) {
+				$('#passwordy').css('background-color','yellow');
+			}else{
+				$('#passwordy').css('background-color','red');
+			}
+		}
+	});
+});
+</script>
+<form>
+	<label>Password:</label><input id="passwordy" type="password" />
+	<span id="feedback"></span>
+</form>
