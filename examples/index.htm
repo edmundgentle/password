@@ -19,32 +19,52 @@
 .pw_strengthIndicator .strength.strong.pass {
 	border-top-color:#07860e;
 }
+.pw_checklist ul {
+	list-style:none;
+	padding:0;
+}
+.pw_checklist ul li {
+	padding:2px;
+	display:block;
+	padding-left:18px;
+	background-image:url(cross.gif);
+	background-repeat:no-repeat;
+	background-position:left;
+}
+.pw_checklist ul li.pass {
+	background-image:url(tick.gif);
+}
 </style>
 <script src="../lib/jquery-1.9.1.min.js"></script>
 <script src="../src/password.js"></script>
 <script>
 $(function() {
 	$('#passwordy').password({
+		minLength:6,
 		strengthIndicator:$('#strongy'),
-		personalInformation:{
-			first_name:'Edmund',
-			last_name:'Gentle',
-			birthdate:'2nd December 1992',
-			location:'Plymouth'
-		},
+		personalInformation:[
+			$('#name'),
+			$('#yearofbirth'),
+			$('#place')
+		],
+		checklist:$('#checklist'),
 		change:function(score, issues, pass) {
-			$('#feedback').html('Score: '+score+', Problems: '+issues);
+			/*$('#feedback').html('Score: '+score+', Problems: '+issues);
 			if(pass) {
 				$('#passwordy').css('background-color','yellow');
 			}else{
 				$('#passwordy').css('background-color','red');
-			}
+			}*/
 		}
 	});
 });
 </script>
 <form>
+	<label>Name:</label><input type="text" id="name" /><br />
+	<label>Year of birth:</label><input type="text" id="yearofbirth" /><br />
+	<label>Current Location:</label><input type="text" id="place" /><br />
 	<label>Password:</label><input id="passwordy" type="password" />
 	<span id="feedback"></span>
 	<div id="strongy"></div>
+	<div id="checklist"></div>
 </form>

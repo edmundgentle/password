@@ -6,11 +6,20 @@
 				allowSpace:false,
 				change:function() {},
 				strengthIndicator:null,
-				personalInformation:{}
+				personalInformation:[],
+				checklist:null
 			}, options);
 			this.each(function() {
 				var t=$(this);
 				var si=null;
+				var cl=null;
+				$.each(settings.personalInformation, function(index, value) {
+					if(typeof(value)=='string') {
+						if($(value).length>0) {
+							settings.personalInformation[index]=$(value);
+						}
+					}
+				});
 				var score = $.fn.password('calculateScore',t,settings);
 				if(settings.strengthIndicator!=null) {
 					if(typeof(settings.strengthIndicator)=='string') {
@@ -29,13 +38,41 @@
 						}
 					}
 				}
-				$.each(settings.personalInformation, function(index, value) {
-					if(typeof(value)=='string') {
-						if($(value).length>0) {
-							settings.personalInformation[index]=$(value);
-						}
+				if(settings.checklist!=null) {
+					if(typeof(settings.checklist)=='string') {
+						cl=$(settings.checklist);
+					}else{
+						cl=settings.checklist;
 					}
-				});
+					cl.html('<div class="pw_checklist"><ul><li class="pw_check_length">Length of at least '+settings.minLength+' characters</li><li class="pw_check_uclc">Contains uppercase and lowercase letters</li><li class="pw_check_nums">Contains numbers</li><li class="pw_check_special">Contains special characters</li><li class="pw_check_spaces">Doesn\'t contain spaces</li><li class="pw_check_personal">Doesn\'t contain personal information</li></ul></div>');
+					if(settings.personalInformation.length==0) {
+						cl.find('.pw_check_personal').remove();
+					}
+					if(settings.allowSpace) {
+						cl.find('.pw_check_spaces').remove();
+					}
+					if(settings.minLength<1) {
+						cl.find('.pw_check_length').remove();
+					}
+					if(score[1].indexOf('TOO_SHORT')==-1) {
+						cl.find('.pw_check_length').addClass('pass');
+					}
+					if(score[1].indexOf('NO_UPPERCASE_LETTERS')==-1 && score[1].indexOf('NO_LOWERCASE_LETTERS')==-1) {
+						cl.find('.pw_check_uclc').addClass('pass');
+					}
+					if(score[1].indexOf('NO_NUMBERS')==-1) {
+						cl.find('.pw_check_nums').addClass('pass');
+					}
+					if(score[1].indexOf('NO_SPECIAL_CHARACTERS')==-1) {
+						cl.find('.pw_check_special').addClass('pass');
+					}
+					if(score[1].indexOf('CONTAINS_SPACE')==-1) {
+						cl.find('.pw_check_spaces').addClass('pass');
+					}
+					if(score[1].indexOf('CONTAINS_PERSONAL_INFO')==-1) {
+						cl.find('.pw_check_personal').addClass('pass');
+					}
+				}
 				t.keyup(function() {
 					var score = $.fn.password('calculateScore',t,settings);
 					if(si!=null) {
@@ -48,6 +85,27 @@
 							if(score[0]>=80) {
 								si.find('.strong').addClass('pass');
 							}
+						}
+					}
+					if(cl!=null) {
+						cl.find('.pass').removeClass('pass');
+						if(score[1].indexOf('TOO_SHORT')==-1) {
+							cl.find('.pw_check_length').addClass('pass');
+						}
+						if(score[1].indexOf('NO_UPPERCASE_LETTERS')==-1 && score[1].indexOf('NO_LOWERCASE_LETTERS')==-1) {
+							cl.find('.pw_check_uclc').addClass('pass');
+						}
+						if(score[1].indexOf('NO_NUMBERS')==-1) {
+							cl.find('.pw_check_nums').addClass('pass');
+						}
+						if(score[1].indexOf('NO_SPECIAL_CHARACTERS')==-1) {
+							cl.find('.pw_check_special').addClass('pass');
+						}
+						if(score[1].indexOf('CONTAINS_SPACE')==-1) {
+							cl.find('.pw_check_spaces').addClass('pass');
+						}
+						if(score[1].indexOf('CONTAINS_PERSONAL_INFO')==-1) {
+							cl.find('.pw_check_personal').addClass('pass');
 						}
 					}
 					settings.change.call(this, score[0], score[1], score[2]);
@@ -93,14 +151,18 @@
 			//check personal information
 			var pi=[];
 			$.each(settings.personalInformation, function(index, value) {
-				if(typeof(value)=='string') {
-					pi.push(value.toLowerCase());
-					var n=value.match(/[1-2][0-9]{3}/g);
-					if(n) {
-						pi.push(n[0].substring(2,4));
-					}
-				}else{
-					pi.push(value.val().toLowerCase());
+				if(typeof(value)!='string') {
+					value=value.val();
+				}
+				if(value.length>0) {
+					var v=value.toLowerCase().split(' ');
+					$.each(v, function(p, q) {
+						pi.push(q);
+						var n=q.match(/[1-2][0-9]{3}/g);
+						if(n) {
+							pi.push(n[0].substring(2,4));
+						}
+					});
 				}
 			});
 			var slc=s.toLowerCase();
