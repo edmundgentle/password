@@ -1,6 +1,6 @@
 <style>
 .pw_strengthIndicator .strength {
-	border-top: 3px solid #eee;
+	border-top: 6px solid #eee;
 	display: inline-block;
 	padding: 3px;
 	padding-top: 6px;
@@ -26,6 +26,12 @@
 $(function() {
 	$('#passwordy').password({
 		strengthIndicator:$('#strongy'),
+		personalInformation:{
+			first_name:'Edmund',
+			last_name:'Gentle',
+			birthdate:'2nd December 1992',
+			location:'Plymouth'
+		},
 		change:function(score, issues, pass) {
 			$('#feedback').html('Score: '+score+', Problems: '+issues);
 			if(pass) {
