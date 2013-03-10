@@ -1,8 +1,31 @@
+<style>
+.pw_strengthIndicator .strength {
+	border-top: 3px solid #eee;
+	display: inline-block;
+	padding: 3px;
+	padding-top: 6px;
+	margin-right: 10px;
+	font-size: 11px;
+	text-transform: uppercase;
+	font-weight: bold;
+	font-family: Arial;
+}
+.pw_strengthIndicator .strength.weak.pass {
+	border-top-color:#cf2338;
+}
+.pw_strengthIndicator .strength.medium.pass {
+	border-top-color:#f2fb2b;
+}
+.pw_strengthIndicator .strength.strong.pass {
+	border-top-color:#07860e;
+}
+</style>
 <script src="../lib/jquery-1.9.1.min.js"></script>
 <script src="../src/password.js"></script>
 <script>
 $(function() {
 	$('#passwordy').password({
+		strengthIndicator:$('#strongy'),
 		change:function(score, issues, pass) {
 			$('#feedback').html('Score: '+score+', Problems: '+issues);
 			if(pass) {
@@ -17,4 +40,5 @@ $(function() {
 <form>
 	<label>Password:</label><input id="passwordy" type="password" />
 	<span id="feedback"></span>
+	<div id="strongy"></div>
 </form>
