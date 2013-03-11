@@ -10,16 +10,12 @@
 		<script>
 		$(function() {
 			$('#passwordy').password({
-				minLength:6,
-				strengthIndicator:$('#strongy'),
 				personalInformation:[
 					$('#name'),
-					$('#yearofbirth'),
+					$('#dateofbirth'),
 					$('#place')
 				],
 				dictionary:'../src/dictionaries/en.js',
-				checklist:$('#checklist'),
-				doubleType:$('#pass2'),
 				change:function(score, issues, pass) {
 					$('#feedback').html('<strong>Score:</strong> '+Math.round(score)+'<br /><strong>Problems:</strong> '+issues.join(', ')+'<br /><strong>Passed?:</strong> '+pass);
 				}
@@ -29,13 +25,14 @@
 	</head>
 	<body>
 		<div class="container">
-			<h1>Password Checker Examples</h1>
-			<ul class="blocklist">
-				<li><a href="example-default.htm">Default Implementation</a></li>
-				<li><a href="example-savedinfo.htm">Prefilled User Data</a></li>
-				<li><a href="example-meter.htm">Strength Meter</a></li>
-				<li><a href="example-checklist.htm">Checklist</a></li>
-			</ul>
+			<h1>Default Implementation</h1>
+			<form>
+				<div class="form_elem"><label>Name:</label><input type="text" id="name" /></div>
+				<div class="form_elem"><label>Date of birth:</label><input type="text" id="dateofbirth" /></div>
+				<div class="form_elem"><label>Current Location:</label><input type="text" id="place" /></div>
+				<div class="form_elem"><label>Password:</label><input id="passwordy" type="password" />
+				<div id="feedback"></div>
+			</form>
 		</div>
 	</body>
 </html>

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<title>Password Examples: Default Implementation</title>
+		<title>Password Examples: Saved Information</title>
 		<link rel="stylesheet" href="style.css" />
 		<link rel="stylesheet" href="../src/jquery.password.css" />
 		<script src="../lib/jquery-1.9.1.min.js"></script>
@@ -10,16 +10,12 @@
 		<script>
 		$(function() {
 			$('#passwordy').password({
-				minLength:6,
-				strengthIndicator:$('#strongy'),
 				personalInformation:[
-					$('#name'),
-					$('#yearofbirth'),
-					$('#place')
+					'Bob Smith',
+					'2nd December 1992',
+					'London'
 				],
 				dictionary:'../src/dictionaries/en.js',
-				checklist:$('#checklist'),
-				doubleType:$('#pass2'),
 				change:function(score, issues, pass) {
 					$('#feedback').html('<strong>Score:</strong> '+Math.round(score)+'<br /><strong>Problems:</strong> '+issues.join(', ')+'<br /><strong>Passed?:</strong> '+pass);
 				}
@@ -29,13 +25,15 @@
 	</head>
 	<body>
 		<div class="container">
-			<h1>Password Checker Examples</h1>
-			<ul class="blocklist">
-				<li><a href="example-default.htm">Default Implementation</a></li>
-				<li><a href="example-savedinfo.htm">Prefilled User Data</a></li>
-				<li><a href="example-meter.htm">Strength Meter</a></li>
-				<li><a href="example-checklist.htm">Checklist</a></li>
-			</ul>
+			<h1>Saved Information</h1>
+			<form>
+				<div class="form_elem"><label>Name:</label><div class="fakeinput">Bob Smith</div></div>
+				<div class="form_elem"><label>Date of birth:</label><div class="fakeinput">2nd December 1992</div></div>
+				<div class="form_elem"><label>Current Location:</label><div class="fakeinput">London</div></div>
+				<div class="form_elem"><label>Password:</label><input id="passwordy" type="password" />
+				<div id="feedback"></div>
+				<p><strong>Hint:</strong> Try entering some of the personal information above into the password field (note - even "92" would count as personal information because of year of birth).</p>
+			</form>
 		</div>
 	</body>
 </html>
