@@ -26,3 +26,8 @@ More settings include:
             $('#feedback').html('<strong>Score:</strong> '+Math.round(score)+'<br /><strong>Problems:</strong> '+issues.join(', ')+'<br /><strong>Passed?:</strong> '+pass);
         }
     });
+
+Examples
+--------
+
+You can find all the examples live at http://www.edmundgentle.com/snippets/password/examples/
