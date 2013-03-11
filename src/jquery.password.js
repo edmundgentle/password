@@ -7,12 +7,15 @@
 				change:function() {},
 				strengthIndicator:null,
 				personalInformation:[],
-				checklist:null
+				checklist:null,
+				dictionary:null,
+				doubleType:null
 			}, options);
 			this.each(function() {
 				var t=$(this);
 				var si=null;
 				var cl=null;
+				var dt=null;
 				$.each(settings.personalInformation, function(index, value) {
 					if(typeof(value)=='string') {
 						if($(value).length>0) {
@@ -38,13 +41,28 @@
 						}
 					}
 				}
+				if(settings.doubleType!=null) {
+					if(typeof(settings.doubleType)=='string') {
+						dt=$(settings.doubleType);
+					}else{
+						dt=settings.doubleType;
+					}
+					dt.keyup(function() {
+						if(cl!=null) {
+							cl.find('.pw_check_match').removeClass('pass');
+							if(t.val()==dt.val()) {
+								cl.find('.pw_check_match').addClass('pass');
+							}
+						}
+					});
+				}
 				if(settings.checklist!=null) {
 					if(typeof(settings.checklist)=='string') {
 						cl=$(settings.checklist);
 					}else{
 						cl=settings.checklist;
 					}
-					cl.html('<div class="pw_checklist"><ul><li class="pw_check_length">Length of at least '+settings.minLength+' characters</li><li class="pw_check_uclc">Contains uppercase and lowercase letters</li><li class="pw_check_nums">Contains numbers</li><li class="pw_check_special">Contains special characters</li><li class="pw_check_spaces">Doesn\'t contain spaces</li><li class="pw_check_personal">Doesn\'t contain personal information</li></ul></div>');
+					cl.html('<div class="pw_checklist"><ul><li class="pw_check_length">Length of at least '+settings.minLength+' characters</li><li class="pw_check_uclc">Contains uppercase and lowercase letters</li><li class="pw_check_nums">Contains numbers</li><li class="pw_check_special">Contains special characters</li><li class="pw_check_spaces">Doesn\'t contain spaces</li><li class="pw_check_personal">Doesn\'t contain personal information</li><li class="pw_check_dictionary">Doesn\'t contain common password words</li><li class="pw_check_match">Passwords match</li></ul></div>');
 					if(settings.personalInformation.length==0) {
 						cl.find('.pw_check_personal').remove();
 					}
@@ -53,6 +71,12 @@
 					}
 					if(settings.minLength<1) {
 						cl.find('.pw_check_length').remove();
+					}
+					if(settings.dictionary==null) {
+						cl.find('.pw_check_dictionary').remove();
+					}
+					if(dt==null) {
+						cl.find('.pw_check_match').remove();
 					}
 					if(score[1].indexOf('TOO_SHORT')==-1) {
 						cl.find('.pw_check_length').addClass('pass');
@@ -72,6 +96,17 @@
 					if(score[1].indexOf('CONTAINS_PERSONAL_INFO')==-1) {
 						cl.find('.pw_check_personal').addClass('pass');
 					}
+					if(score[1].indexOf('CONTAINS_COMMON_WORD')==-1) {
+						cl.find('.pw_check_dictionary').addClass('pass');
+					}
+					if(t.val()==dt.val()) {
+						cl.find('.pw_check_match').addClass('pass');
+					}
+				}
+				if(settings.dictionary!=null) {
+					$.getJSON(settings.dictionary, function(json) {
+						settings.dictionaryWords=json;
+					});
 				}
 				t.keyup(function() {
 					var score = $.fn.password('calculateScore',t,settings);
@@ -107,6 +142,12 @@
 						if(score[1].indexOf('CONTAINS_PERSONAL_INFO')==-1) {
 							cl.find('.pw_check_personal').addClass('pass');
 						}
+						if(score[1].indexOf('CONTAINS_COMMON_WORD')==-1) {
+							cl.find('.pw_check_dictionary').addClass('pass');
+						}
+						if(t.val()==dt.val()) {
+							cl.find('.pw_check_match').addClass('pass');
+						}
 					}
 					settings.change.call(this, score[0], score[1], score[2]);
 				});
@@ -115,7 +156,7 @@
 		calculateScore : function(elem, settings) {
 			var s=elem.val();
 			var score=0;
-			var max_score=70;
+			var max_score=90;
 			var pass=true;
 			var errors=[];
 			if(s.length>=settings.minLength) {
@@ -175,6 +216,20 @@
 			});
 			if(fpi) {
 				errors.push('CONTAINS_PERSONAL_INFO');
+			}else if(s.length>5) {
+				score+=20;
+			}
+			var fdi=false;
+			if(settings.dictionaryWords!==undefined) {
+				$.each(settings.dictionaryWords, function(index, value) {
+					var regex = new RegExp(value, "g");
+					if(slc.match(regex)!=null) {
+						fdi=true;
+					}
+				});
+			}
+			if(fdi) {
+				errors.push('CONTAINS_COMMON_WORD');
 			}else if(s.length>5) {
 				score+=20;
 			}

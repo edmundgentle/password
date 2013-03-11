@@ -1,0 +1,1 @@
+["password","123","abc","qwerty","monkey","letmein","dragon","111111","baseball","iloveyou","trustno","sunshine","master","welcome","shadow","ashley","football","jesus","michael","ninja","mustang","hello","!@#$","!@£","admin","facebook","god","angel","fuck","sex","link","jordan","bitch","dick","connect","website","login"]

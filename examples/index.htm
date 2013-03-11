@@ -36,7 +36,7 @@
 }
 </style>
 <script src="../lib/jquery-1.9.1.min.js"></script>
-<script src="../src/password.js"></script>
+<script src="../src/jquery.password.js"></script>
 <script>
 $(function() {
 	$('#passwordy').password({
@@ -47,7 +47,9 @@ $(function() {
 			$('#yearofbirth'),
 			$('#place')
 		],
+		dictionary:'../src/dictionaries/en.js',
 		checklist:$('#checklist'),
+		doubleType:$('#pass2'),
 		change:function(score, issues, pass) {
 			/*$('#feedback').html('Score: '+score+', Problems: '+issues);
 			if(pass) {
@@ -63,7 +65,8 @@ $(function() {
 	<label>Name:</label><input type="text" id="name" /><br />
 	<label>Year of birth:</label><input type="text" id="yearofbirth" /><br />
 	<label>Current Location:</label><input type="text" id="place" /><br />
-	<label>Password:</label><input id="passwordy" type="password" />
+	<label>Password:</label><input id="passwordy" type="password" /><br />
+	<label>Confirm Password:</label><input id="pass2" type="password" />
 	<span id="feedback"></span>
 	<div id="strongy"></div>
 	<div id="checklist"></div>
