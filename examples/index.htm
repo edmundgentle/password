@@ -4,28 +4,6 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title>Password Examples: Default Implementation</title>
 		<link rel="stylesheet" href="style.css" />
-		<link rel="stylesheet" href="../src/jquery.password.css" />
-		<script src="../lib/jquery-1.9.1.min.js"></script>
-		<script src="../src/jquery.password.js"></script>
-		<script>
-		$(function() {
-			$('#passwordy').password({
-				minLength:6,
-				strengthIndicator:$('#strongy'),
-				personalInformation:[
-					$('#name'),
-					$('#yearofbirth'),
-					$('#place')
-				],
-				dictionary:'../src/dictionaries/en.js',
-				checklist:$('#checklist'),
-				doubleType:$('#pass2'),
-				change:function(score, issues, pass) {
-					$('#feedback').html('<strong>Score:</strong> '+Math.round(score)+'<br /><strong>Problems:</strong> '+issues.join(', ')+'<br /><strong>Passed?:</strong> '+pass);
-				}
-			});
-		});
-		</script>
 	</head>
 	<body>
 		<div class="container">
