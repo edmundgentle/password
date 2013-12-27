@@ -77,26 +77,28 @@
 					}
 					if(dt==null) {
 						cl.find('.pw_check_match').remove();
-					}
-					if(score[1].indexOf('TOO_SHORT')==-1) {
+		            }
+
+		if (jQuery.inArray('TOO_SHORT', score[1]) == -1)
+                    {
 						cl.find('.pw_check_length').addClass('pass');
 					}
-					if(score[1].indexOf('NO_UPPERCASE_LETTERS')==-1 && score[1].indexOf('NO_LOWERCASE_LETTERS')==-1) {
+		if (jQuery.inArray('NO_UPPERCASE_LETTERS', score[1] == -1) && jQuery.inArray('NO_LOWERCASE_LETTERS', score[1]) == -1) {
 						cl.find('.pw_check_uclc').addClass('pass');
 					}
-					if(score[1].indexOf('NO_NUMBERS')==-1) {
+		if (jQuery.inArray('NO_NUMBERS', score[1]) == -1) {
 						cl.find('.pw_check_nums').addClass('pass');
 					}
-					if(score[1].indexOf('NO_SPECIAL_CHARACTERS')==-1) {
+		if (jQuery.inArray('NO_SPECIAL_CHARACTERS', score[1]) == -1) {
 						cl.find('.pw_check_special').addClass('pass');
 					}
-					if(score[1].indexOf('CONTAINS_SPACE')==-1) {
+		if (jQuery.inArray('CONTAINS_SPACE', score[1]) == -1) {
 						cl.find('.pw_check_spaces').addClass('pass');
 					}
-					if(score[1].indexOf('CONTAINS_PERSONAL_INFO')==-1) {
+		if (jQuery.inArray('CONTAINS_PERSONAL_INFO', score[1]) == -1) {
 						cl.find('.pw_check_personal').addClass('pass');
 					}
-					if(score[1].indexOf('CONTAINS_COMMON_WORD')==-1) {
+		if (jQuery.inArray('CONTAINS_COMMON_WORD', score[1]) == -1) {
 						cl.find('.pw_check_dictionary').addClass('pass');
 					}
 					if(t.val()==dt.val()) {
@@ -124,25 +126,25 @@
 					}
 					if(cl!=null) {
 						cl.find('.pass').removeClass('pass');
-						if(score[1].indexOf('TOO_SHORT')==-1) {
+						if (jQuery.inArray('TOO_SHORT', score[1]) == -1) {
 							cl.find('.pw_check_length').addClass('pass');
 						}
-						if(score[1].indexOf('NO_UPPERCASE_LETTERS')==-1 && score[1].indexOf('NO_LOWERCASE_LETTERS')==-1) {
+						if (jQuery.inArray('NO_UPPERCASE_LETTERS', score[1]) == -1 && jQuery.inArray('NO_LOWERCASE_LETTERS', score[1]) == -1) {
 							cl.find('.pw_check_uclc').addClass('pass');
 						}
-						if(score[1].indexOf('NO_NUMBERS')==-1) {
+						if (jQuery.inArray('NO_NUMBERS', score[1]) == -1) {
 							cl.find('.pw_check_nums').addClass('pass');
 						}
-						if(score[1].indexOf('NO_SPECIAL_CHARACTERS')==-1) {
+						if (jQuery.inArray('NO_SPECIAL_CHARACTERS', score[1]) == -1) {
 							cl.find('.pw_check_special').addClass('pass');
 						}
-						if(score[1].indexOf('CONTAINS_SPACE')==-1) {
+						if (jQuery.inArray('CONTAINS_SPACE', score[1]) == -1) {
 							cl.find('.pw_check_spaces').addClass('pass');
 						}
-						if(score[1].indexOf('CONTAINS_PERSONAL_INFO')==-1) {
+						if (jQuery.inArray('CONTAINS_PERSONAL_INFO', score[1]) == -1) {
 							cl.find('.pw_check_personal').addClass('pass');
 						}
-						if(score[1].indexOf('CONTAINS_COMMON_WORD')==-1) {
+						if (jQuery.inArray('CONTAINS_COMMON_WORD', score[1]) == -1) {
 							cl.find('.pw_check_dictionary').addClass('pass');
 						}
 						if(t.val()==dt.val()) {
