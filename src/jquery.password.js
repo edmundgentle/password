@@ -3,9 +3,11 @@
 		init : function( options ) { 
 			var settings = $.extend( {
 				minLength:8,
+				minAcceptableScore: 0.3,
 				allowSpace:false,
 				change:function() {},
 				strengthIndicator:null,
+				strengthIndicatorBars: '<div class="pw_strengthIndicator"><div class="strength weak">Weak</div><div class="strength medium">Medium</div><div class="strength strong">Strong</div></div>',
 				personalInformation:[],
 				checklist:null,
 				dictionary:null,
@@ -30,7 +32,9 @@
 					}else{
 						si=settings.strengthIndicator;
 					}
-					si.html('<div class="pw_strengthIndicator"><div class="strength weak">Weak</div><div class="strength medium">Medium</div><div class="strength strong">Strong</div></div>');
+					
+					si.html(settings.strengthIndicatorBars);
+					
 					if(score[2]) {
 						si.find('.weak').addClass('pass');
 						if(score[0]>=50) {
@@ -235,7 +239,7 @@
 			}else if(s.length>5) {
 				score+=20;
 			}
-			if((score/max_score)<0.3) {
+			if((score/max_score)<settings.minAcceptableScore) {
 				pass=false;
 			}
 			if(s.length==0) {
