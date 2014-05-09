@@ -44,8 +44,6 @@
 							si.find('.strong').addClass('pass');
 						}
 					}
-					
-					settings.change.call(this, score[0], score[1], score[2]);
 				}
 				if(settings.doubleType!=null) {
 					if(typeof(settings.doubleType)=='string') {
@@ -159,6 +157,8 @@
 					}
 					settings.change.call(this, score[0], score[1], score[2]);
 				});
+				
+				settings.change.call(this, score[0], score[1], score[2]);
 			});
 		},
 		calculateScore : function(elem, settings) {
