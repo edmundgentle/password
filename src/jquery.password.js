@@ -3,7 +3,7 @@
 		init : function( options ) { 
 			var settings = $.extend( {
 				minLength:8,
-				minAcceptableScore: 0.3,
+				minAcceptableScore: 30,
 				allowSpace:false,
 				change:function() {},
 				strengthIndicator:null,
@@ -15,6 +15,7 @@
 			}, options);
 			this.each(function() {
 				var t=$(this);
+				t.data('jq_password',settings);
 				var si=null;
 				var cl=null;
 				var dt=null;
@@ -25,7 +26,7 @@
 						}
 					}
 				});
-				var score = $.fn.password('calculateScore',t,settings);
+				var score = $.fn.password('calculateScore',t);
 				if(settings.strengthIndicator!=null) {
 					if(typeof(settings.strengthIndicator)=='string') {
 						si=$(settings.strengthIndicator);
@@ -35,15 +36,7 @@
 					
 					si.html(settings.strengthIndicatorBars);
 					
-					if(score[2]) {
-						si.find('.weak').addClass('pass');
-						if(score[0]>=50) {
-							si.find('.medium').addClass('pass');
-						}
-						if(score[0]>=80) {
-							si.find('.strong').addClass('pass');
-						}
-					}
+					$.fn.password('updateStrengthIndicator',score, si);
 				}
 				if(settings.doubleType!=null) {
 					if(typeof(settings.doubleType)=='string') {
@@ -51,7 +44,7 @@
 					}else{
 						dt=settings.doubleType;
 					}
-					dt.keyup(function() {
+					dt.on('keyup change',function() {
 						if(cl!=null) {
 							cl.find('.pw_check_match').removeClass('pass');
 							if(t.val()==dt.val()) {
@@ -82,78 +75,20 @@
 					if(dt==null) {
 						cl.find('.pw_check_match').remove();
 		            }
-
-		if (jQuery.inArray('TOO_SHORT', score[1]) == -1)
-                    {
-						cl.find('.pw_check_length').addClass('pass');
-					}
-		if (jQuery.inArray('NO_UPPERCASE_LETTERS', score[1] == -1) && jQuery.inArray('NO_LOWERCASE_LETTERS', score[1]) == -1) {
-						cl.find('.pw_check_uclc').addClass('pass');
-					}
-		if (jQuery.inArray('NO_NUMBERS', score[1]) == -1) {
-						cl.find('.pw_check_nums').addClass('pass');
-					}
-		if (jQuery.inArray('NO_SPECIAL_CHARACTERS', score[1]) == -1) {
-						cl.find('.pw_check_special').addClass('pass');
-					}
-		if (jQuery.inArray('CONTAINS_SPACE', score[1]) == -1) {
-						cl.find('.pw_check_spaces').addClass('pass');
-					}
-		if (jQuery.inArray('CONTAINS_PERSONAL_INFO', score[1]) == -1) {
-						cl.find('.pw_check_personal').addClass('pass');
-					}
-		if (jQuery.inArray('CONTAINS_COMMON_WORD', score[1]) == -1) {
-						cl.find('.pw_check_dictionary').addClass('pass');
-					}
-					if(t.val()==dt.val()) {
-						cl.find('.pw_check_match').addClass('pass');
-					}
+					$.fn.password('updateChecklist',score, cl);
 				}
 				if(settings.dictionary!=null) {
 					$.getJSON(settings.dictionary, function(json) {
 						settings.dictionaryWords=json;
 					});
 				}
-				t.keyup(function() {
-					var score = $.fn.password('calculateScore',t,settings);
+				t.on('keyup change',function() {
+					var score = $.fn.password('calculateScore',t);
 					if(si!=null) {
-						si.find('.pass').removeClass('pass');
-						if(score[2]) {
-							si.find('.weak').addClass('pass');
-							if(score[0]>=50) {
-								si.find('.medium').addClass('pass');
-							}
-							if(score[0]>=80) {
-								si.find('.strong').addClass('pass');
-							}
-						}
+						$.fn.password('updateStrengthIndicator',score, si);
 					}
 					if(cl!=null) {
-						cl.find('.pass').removeClass('pass');
-						if (jQuery.inArray('TOO_SHORT', score[1]) == -1) {
-							cl.find('.pw_check_length').addClass('pass');
-						}
-						if (jQuery.inArray('NO_UPPERCASE_LETTERS', score[1]) == -1 && jQuery.inArray('NO_LOWERCASE_LETTERS', score[1]) == -1) {
-							cl.find('.pw_check_uclc').addClass('pass');
-						}
-						if (jQuery.inArray('NO_NUMBERS', score[1]) == -1) {
-							cl.find('.pw_check_nums').addClass('pass');
-						}
-						if (jQuery.inArray('NO_SPECIAL_CHARACTERS', score[1]) == -1) {
-							cl.find('.pw_check_special').addClass('pass');
-						}
-						if (jQuery.inArray('CONTAINS_SPACE', score[1]) == -1) {
-							cl.find('.pw_check_spaces').addClass('pass');
-						}
-						if (jQuery.inArray('CONTAINS_PERSONAL_INFO', score[1]) == -1) {
-							cl.find('.pw_check_personal').addClass('pass');
-						}
-						if (jQuery.inArray('CONTAINS_COMMON_WORD', score[1]) == -1) {
-							cl.find('.pw_check_dictionary').addClass('pass');
-						}
-						if(t.val()==dt.val()) {
-							cl.find('.pw_check_match').addClass('pass');
-						}
+						$.fn.password('updateChecklist',score, cl);
 					}
 					settings.change.call(this, score[0], score[1], score[2]);
 				});
@@ -161,94 +96,154 @@
 				settings.change.call(this, score[0], score[1], score[2]);
 			});
 		},
-		calculateScore : function(elem, settings) {
-			var s=elem.val();
-			var score=0;
-			var max_score=90;
-			var pass=true;
-			var errors=[];
-			if(s.length>=settings.minLength) {
-				score+=10;
-			}else{
-				errors.push('TOO_SHORT');
-				pass=false;
+		calculate: function() {
+			var t=$(this);
+			if(typeof(t.data('jq_password'))=='object') {
+				return $.fn.password('calculateScore',t);
 			}
-			if(s.match(/[A-Z]/g)!=null) {
-				score+=10;
-			}else{
-				errors.push('NO_UPPERCASE_LETTERS');
+			return null;
+		},
+		updateChecklist:function(score, cl) {
+			cl.find('.pass').removeClass('pass');
+			if (jQuery.inArray('TOO_SHORT', score[1]) == -1) {
+				cl.find('.pw_check_length').addClass('pass');
 			}
-			if(s.match(/[a-z]/g)!=null) {
-				score+=10;
-			}else{
-				errors.push('NO_LOWERCASE_LETTERS');
+			if (jQuery.inArray('NO_UPPERCASE_LETTERS', score[1]) == -1 && jQuery.inArray('NO_LOWERCASE_LETTERS', score[1]) == -1) {
+				cl.find('.pw_check_uclc').addClass('pass');
 			}
-			if(s.match(/[0-9]/g)!=null) {
-				score+=10;
-			}else{
-				errors.push('NO_NUMBERS');
+			if (jQuery.inArray('NO_NUMBERS', score[1]) == -1) {
+				cl.find('.pw_check_nums').addClass('pass');
 			}
-			if(!settings.allowSpace && s.match(/ /g)!=null) {
-				errors.push('CONTAINS_SPACE');
-				pass=false;
+			if (jQuery.inArray('NO_SPECIAL_CHARACTERS', score[1]) == -1) {
+				cl.find('.pw_check_special').addClass('pass');
 			}
-			if(s.match(/(\W|_)/g)!=null) {
-				score+=10;
-			}else{
-				errors.push('NO_SPECIAL_CHARACTERS');
+			if (jQuery.inArray('CONTAINS_SPACE', score[1]) == -1) {
+				cl.find('.pw_check_spaces').addClass('pass');
 			}
-			//check personal information
-			var pi=[];
-			$.each(settings.personalInformation, function(index, value) {
-				if(typeof(value)!='string') {
-					value=value.val();
+			if (jQuery.inArray('CONTAINS_PERSONAL_INFO', score[1]) == -1) {
+				cl.find('.pw_check_personal').addClass('pass');
+			}
+			if (jQuery.inArray('CONTAINS_COMMON_WORD', score[1]) == -1) {
+				cl.find('.pw_check_dictionary').addClass('pass');
+			}
+			if(t.val()==dt.val()) {
+				cl.find('.pw_check_match').addClass('pass');
+			}
+		},
+		updateStrengthIndicator:function(score, si) {
+			si.find('.pass').removeClass('pass');
+			if(score[2]) {
+				si.find('.weak').addClass('pass');
+				if(score[0]>=50) {
+					si.find('.medium').addClass('pass');
 				}
-				if(value.length>0) {
-					var v=value.toLowerCase().split(' ');
-					$.each(v, function(p, q) {
-						pi.push(q);
-						var n=q.match(/[1-2][0-9]{3}/g);
-						if(n) {
-							pi.push(n[0].substring(2,4));
+				if(score[0]>=80) {
+					si.find('.strong').addClass('pass');
+				}
+			}
+		},
+		calculateScore : function(elem) {
+			var s=elem.val();
+			var settings=elem.data('jq_password');
+			if(typeof(settings)=='object') {
+				var score=0;
+				var max_score=90;
+				var pass=true;
+				var errors=[];
+				if(s.length>=settings.minLength) {
+					score+=10;
+				}else{
+					errors.push('TOO_SHORT');
+					pass=false;
+				}
+				if(s.match(/[A-Z]/g)!=null) {
+					score+=10;
+				}else{
+					errors.push('NO_UPPERCASE_LETTERS');
+				}
+				if(s.match(/[a-z]/g)!=null) {
+					score+=10;
+				}else{
+					errors.push('NO_LOWERCASE_LETTERS');
+				}
+				if(s.match(/[0-9]/g)!=null) {
+					score+=10;
+				}else{
+					errors.push('NO_NUMBERS');
+				}
+				if(!settings.allowSpace && s.match(/ /g)!=null) {
+					errors.push('CONTAINS_SPACE');
+					pass=false;
+				}
+				if(s.match(/(\W|_)/g)!=null) {
+					score+=10;
+				}else{
+					errors.push('NO_SPECIAL_CHARACTERS');
+				}
+				//check personal information
+				var pi=[];
+				$.each(settings.personalInformation, function(index, value) {
+					if(typeof(value)!='string') {
+						value=value.val();
+					}
+					if(value.length>0) {
+						var v=value.toLowerCase().split(' ');
+						$.each(v, function(p, q) {
+							pi.push(q);
+							var n=q.match(/[1-2][0-9]{3}/g);
+							if(n) {
+								pi.push(n[0].substring(2,4));
+							}
+						});
+					}
+				});
+				var slc=s.toLowerCase();
+				var fpi=false;
+				$.each(pi, function(index, value) {
+					var regex = new RegExp(value, "g");
+					if(slc.match(regex)!=null) {
+						fpi=true;
+					}
+				});
+				if(fpi) {
+					errors.push('CONTAINS_PERSONAL_INFO');
+				}else if(s.length>5) {
+					score+=20;
+				}
+				var fdi=false;
+				if(settings.dictionaryWords!==undefined) {
+					$.each(settings.dictionaryWords, function(index, value) {
+						var regex = new RegExp(value, "g");
+						if(slc.match(regex)!=null) {
+							fdi=true;
 						}
 					});
 				}
-			});
-			var slc=s.toLowerCase();
-			var fpi=false;
-			$.each(pi, function(index, value) {
-				var regex = new RegExp(value, "g");
-				if(slc.match(regex)!=null) {
-					fpi=true;
+				if(fdi) {
+					errors.push('CONTAINS_COMMON_WORD');
+				}else if(s.length>5) {
+					score+=20;
 				}
-			});
-			if(fpi) {
-				errors.push('CONTAINS_PERSONAL_INFO');
-			}else if(s.length>5) {
-				score+=20;
-			}
-			var fdi=false;
-			if(settings.dictionaryWords!==undefined) {
-				$.each(settings.dictionaryWords, function(index, value) {
-					var regex = new RegExp(value, "g");
-					if(slc.match(regex)!=null) {
-						fdi=true;
+				var score_percent=(score/max_score)*100;
+				if(score_percent<settings.minAcceptableScore) {
+					pass=false;
+				}
+				if(s.length==0) {
+					pass=false;
+					errors.push('EMPTY');
+				}
+				if(elem.attr('name')!==undefined) {
+					var els=$('input[name="'+elem.attr('name')+'_pass"]');
+					if(els.length>0) {
+						els.val(pass);
+					}else{
+						elem.after('<input type="hidden" name="'+elem.attr('name')+'_pass" value="'+pass+'" />');
 					}
-				});
+				}
+				return [score_percent,errors,pass];
+			}else{
+				return null;
 			}
-			if(fdi) {
-				errors.push('CONTAINS_COMMON_WORD');
-			}else if(s.length>5) {
-				score+=20;
-			}
-			if((score/max_score)<settings.minAcceptableScore) {
-				pass=false;
-			}
-			if(s.length==0) {
-				pass=false;
-				errors.push('EMPTY');
-			}
-			return [(score/max_score)*100,errors,pass];
 		}
 	};
 	$.fn.password = function( method ) {
